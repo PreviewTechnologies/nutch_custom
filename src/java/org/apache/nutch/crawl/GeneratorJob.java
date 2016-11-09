@@ -209,7 +209,13 @@ public class GeneratorJob extends NutchTool implements Tool {
     } else if (GENERATOR_COUNT_VALUE_DOMAIN.equalsIgnoreCase(mode)) {
       getConf().set(URLPartitioner.PARTITION_MODE_KEY,
           URLPartitioner.PARTITION_MODE_DOMAIN);
+      getConf().set(GeneratorJob.BATCH_ID, batchId);
     } else {
+      // generate batchId
+      long curTime = System.currentTimeMillis();
+      int randomSeed = Math.abs(new Random().nextInt());
+      batchId = (curTime / 1000) + "-" + randomSeed;
+      getConf().set(BATCH_ID, batchId);
       LOG.warn("Unknown generator.max.count mode '" + mode + "', using mode="
           + GENERATOR_COUNT_VALUE_HOST);
       getConf().set(GENERATOR_COUNT_MODE, GENERATOR_COUNT_VALUE_HOST);
